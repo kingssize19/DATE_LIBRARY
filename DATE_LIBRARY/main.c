@@ -20,11 +20,6 @@ int main(int argc, char* argv[]) {
 }
 
 /*
-53.video
-********
-OOP mantığıyla çalışan date.h adında bir kütüphane tasarlayalım. Kullanıcı bu dosyanın içerisindeki yapı elemanlarının ne olduklarını bilmesin
-bizim ona sunduğumuz fonksiyonlar sayesinde ihtiyaç doğrultusunda bu kütüphaneyi kullansın.
-
 
 1. test Basarili
 -------
