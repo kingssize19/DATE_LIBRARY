@@ -1,4 +1,6 @@
-﻿#include <stdio.h>
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
 #include <stdlib.h>
 #include "date.h"
 #include <time.h>
@@ -6,17 +8,25 @@
 
 int main(int argc, char* argv[]) {
 
-
 	Date mydate;
 
 	set_today(&mydate);
 
-	printf("yil = %d\n", year(&mydate));
-	printf("ay = %d\n", month(&mydate));
-	printf("gun = %d\n", month_day(&mydate));
-	printf("haftanin %d. gunu\n", weekday(&mydate) + 1); // pazar haftanın ilk günü kabul edilecek.
-	printf("yilin %d. gunu\n", year_day(&mydate));
+	
+	for (int i = 0; i < 10; ++i) {
+		increment_date(&mydate, 50);
+		print_date(&mydate);
+		(void)getchar();
+	}
 
+	
+	for (int i = 0; i < 10; ++i) {
+		decrement_date(&mydate, 50);
+		print_date(&mydate);
+		(void)getchar();
+	}
+
+	
 }
 
 /*
@@ -183,8 +193,10 @@ int main(int argc, char* argv[]) {
 
 ------------------------------------------------------------
 
-7. test kodu
+7. test kodu	Basarili
 ------------
+
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -206,7 +218,12 @@ void set_date_array_random(Date* p, size_t size)
 //		set_random_date(p + i);
 //}
 
-
+void clear_input_buffer(void)
+{
+	int ch;
+	while ((ch = getchar()) != '\n' && ch != EOF)
+		;	// null statement
+}
 
 
 void print_date_array(const Date* p, size_t size)
@@ -226,14 +243,14 @@ void sort_date_array(Date* p, size_t size)
 }
 
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
 
 	size_t n;
 
 	printf("Kac tarih : ");
 	scanf("%zu", &n);
 
-	Date* p = (Date *)malloc(n * sizeof(Date));
+	Date* p = (Date*)malloc(n * sizeof(Date));
 	if (!p) {
 		fprintf(stderr, "bellek yetersiz\n");
 		return 1;
@@ -244,7 +261,8 @@ int main(int argc, char *argv[]) {
 	clock_t start = clock();
 	sort_date_array(p, n);
 	clock_t end = clock();
-	printf("Siralama tamamlandi sure %f saniye\n", (double)(end-start) / CLOCK_PER_SEC);
+	printf("Siralama tamamlandi sure %f saniye\n", (double)(end - start) / CLOCKS_PER_SEC);
+	clear_input_buffer(); // scanf'in bıraktığı newline'ın getchar tarafından alınmaması için. std output'un bufferı flash edilir.
 	(void)getchar();
 
 
@@ -252,12 +270,12 @@ int main(int argc, char *argv[]) {
 
 	free(p);
 
-	return 0;
+
 }
 
 ---------------------------------------------------------------------------------------------
 
-8. test kodu
+8. test kodu Basarili
 ------------
 
 #include <stdio.h>
@@ -281,14 +299,14 @@ int main(int argc, char *argv[]) {
 	printf("Bugun : ");
 	print_date(&todays_date);
 
-	printf("Bugun hayatinizin %d. gunu\n", date_diff(&todays_date, &birth_day))
+	printf("Bugun hayatinizin %d. gunu\n", date_diff(&todays_date, &birth_day));
 
 	return 0;
 }
 
 -----------------------------------------------------------------------------------
 
-9. test kodu
+9. test kodu  Basarili
 ------------
 
 
@@ -317,6 +335,28 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
+-------------------------------------------------------------------------
+
+10. test kodu Basarili
+-------------
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "date.h"
+#include <time.h>
+
+
+int main(int argc, char* argv[]) {
+
+	Date today;
+	set_today(&today);
+	print_date(&today);
+
+	printf("Yilin %d. gunu\n", year_day(&today));
+
+
+}
 
 
 
