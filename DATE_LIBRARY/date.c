@@ -24,6 +24,8 @@ PRIVATE int daytabs[][13] = {
 
 PRIVATE Date* set(Date* p, int d, int m, int y);
 PRIVATE int is_valid_date(int d, int m, int y);
+PRIVATE int totaldays(const Date* p);
+PRIVATE Date* to_date(Date* p, int tdays);
 
 
 //--------------------------------------------------------------------------------------------------------------------------------------
@@ -74,7 +76,16 @@ PUBLIC int weekday(const Date* p)
 
 PUBLIC int year_day(const Date* p)
 {
-	return 0;
+	int y = year(p);
+	int m = month(p);
+	
+	int sum = month_day(p);
+
+	for (int i = 1; i < m; ++i) {
+		sum += MDAYS(y, i);
+	}
+
+	return sum;
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------
@@ -97,6 +108,55 @@ PUBLIC Date* scan_date(Date* p)
 
 	return set(p, d, m, y);
 }
+//--------------------------------------------------------------------------------------------------------------------------------------
+
+PUBLIC int cmp_date(const Date* p1, const Date* p2)
+{
+	int y1 = year(p1);
+	int y2 = year(p2);
+
+	if (y1 != y2) {
+		return y1 > y2 ? 1 : -1;
+	}
+
+	int m1 = month(p1);
+	int m2 = month(p2);
+
+	if (m1 != m2) {
+		return m1 > m2 ? 1 : -1;
+	}
+
+	int d1 = month_day(p1);
+	int d2 = month_day(p2);
+
+	if (d1 != d2) {
+		return d1 > d2 ? 1 : -1;
+	}
+}
+
+PUBLIC Date* increment_date(Date* p, int day)
+{
+	return to_date(p, totaldays(p) + day);
+	
+}
+
+PUBLIC Date* decrement_date(Date* p, int day)
+{
+	return to_date(p, totaldays(p) - day);
+}
+
+
+PUBLIC Date* ndays_after(Date* presult, const Date* psource, int n)
+{
+	return to_date(presult, totaldays(psource) + n);
+
+}
+
+PUBLIC Date* ndays_before(Date* presult, const Date* psource, int n)
+{
+	return to_date(presult, totaldays(psource) - n);
+}
+
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 
@@ -121,6 +181,9 @@ PUBLIC Date* set_date_from_str(Date* p, const char* str)
 
 
 
+
+
+
 Date* set_today(Date* p)
 {
 	time_t sec;
@@ -138,6 +201,17 @@ PUBLIC Date* set_date(Date* p, int d, int m, int y)
 }
 
 
+PRIVATE int totaldays(const Date* p)
+{
+	int sum = year_day(p);
+
+	for (int i = YEARBASE; i < year(p); ++i) {
+		sum += ISLEAP(i) ? 366 : 365;
+	}
+	return sum;
+}
+
+
 PRIVATE Date* set(Date* p, int d, int m, int y)
 {
 	if (!is_valid_date(d, m, y)) {
@@ -147,6 +221,40 @@ PRIVATE Date* set(Date* p, int d, int m, int y)
 	p->d_ = d;
 	p->m_ = m;
 	p->y_ = y;
+}
+
+
+PUBLIC int date_diff(const Date* p1, const Date* p2)
+{
+	int y1 = totaldays(p1);
+	int y2 = totaldays(p2);
+
+	return y1 - y2;
+
+	//return totaldays(p1) - totaldays(p2);		idiomatik yapısıda kullanılabilir.
+}
+
+
+PRIVATE Date* to_date(Date* p, int tdays)
+{
+	int y = YEARBASE;
+
+	while (tdays > (ISLEAP(y) ? 366 : 365)) {
+
+		tdays -= (ISLEAP(y) ? 366 : 365);
+		++y;
+	}
+
+	int m = 1;
+
+	while (tdays > MDAYS(y, m)) {
+		tdays -= MDAYS(y, m);
+		++m;
+	}
+
+	int d = tdays;
+
+	return set(p, d, m, y);
 }
 
 
